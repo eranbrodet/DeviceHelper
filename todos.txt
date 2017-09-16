@@ -1,0 +1,24 @@
+_common_post should be automated
+Add tab for free text input and maybe "good only get key"
+Document dependencies in adb,appt etc.
+What happens if switching devices during command?
+logs abort is shown when no logs (had logs before)
+apply default folder for everything (app, logs, screenshots, etc.)
+clear logs area button
+Global handling of crashes (writing a log file or something, also when config json is invalid show popup or something)
+Retake focus
+Move everything that shouldn't be committed to config file
+upgrade detection system
+Update ui before synchronous operations
+escape adb text chars (http://stackoverflow.com/a/31371987/2134702)
+
+better separation of apps, sdks, configs. maybe everything should be checkboxes and there should be a play/abort button instead of buttons for sdks)
+Choose folder and list files
+Clear file selection
+Ability to cancel when running system command (and not just from popup)
+Auto selecting devices might mean that if a device disconnected mid way, the run will try to continue on another device?
+
+rename project to something cool
+Detect devices connnect/disconnect automatically
+auto detect sdk (with check flavours)?
+Redo it in C# ?
