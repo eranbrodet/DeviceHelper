@@ -43,7 +43,7 @@ class AndroidHelperUI(Frame, object):
     _SDKS = ['Airwatch', 'Good', 'Lagoon']
 
     def __init__(self, **kw):
-        super().__init__(**kw)
+        super(AndroidHelperUI, self).__init__(**kw)
         self._config = Config.getInstance()
         self._parent = self._config.ui_root
         Frame.__init__(self, self._parent)

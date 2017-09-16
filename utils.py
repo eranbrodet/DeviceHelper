@@ -41,7 +41,7 @@ class Singleton(object):
 
 class BlackBerryUtils(object):
     def __init__(self, defaults):
-        self._defaults = defaults
+        self._defaults = defaults['good']
 
     def get_access_key_from_server(self, user_name):
         disable_warnings()
