@@ -123,7 +123,7 @@ class AndroidHelperUI(Frame, object):
         self.devices = Listbox(self._parent, width=30, selectmode='single', exportselection=0, activestyle='none')
         self.devices.grid(row=1, column=10, rowspan=17, sticky=W+N)
 
-        self._text_entry = Combobox(self._parent, textvariable=self._config.text_entry.var)
+        self._text_entry = Combobox(self._parent, textvariable=self._config.text_entry.var, width=27)
         self._text_entry.grid(row=17, column=10)
         Button(self._parent, text='>', width=2, command=self._enter_text).grid(row=17, column=11, sticky=W + N)
 
