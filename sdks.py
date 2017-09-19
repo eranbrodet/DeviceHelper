@@ -96,6 +96,8 @@ class Sdks(object):
             cls._secret_server()
         elif cls._config.tango():
             cls._tango()
+        elif cls._config.jabber():
+            cls._jabber()
 
     @classmethod
     def _jive_daily(cls):
@@ -142,4 +144,14 @@ class Sdks(object):
         Device.input_text(defaults['url'])
         Device.input_tab()
         Device.input_tab()
+        Device.input_enter()
+        
+    @classmethod
+    def _jabber(cls):
+        defaults = cls._config.defaults.get('jabber', {})
+        cls._config.ui_main.prompt_user('input Jabber user')
+        Device.input_text(defaults['user'])
+        Device.input_enter()
+        cls._config.ui_main.prompt_user('input Jabber Password')
+        Device.input_text(defaults['password'])
         Device.input_enter()

@@ -61,7 +61,7 @@ class AndroidHelperUI(Frame, object):
             raise AbortAction("Action aborted by user")
 
     def _init_window(self):
-        size = 700, 390
+        size = 700, 400
         # Center position on screen
         w = self._parent.winfo_screenwidth()
         h = self._parent.winfo_screenheight()
