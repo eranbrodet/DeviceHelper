@@ -75,4 +75,4 @@ class BlackBerryUtils(object):
         return ""
 
 def is_windows():
-    return system == 'Windows'
+    return system() == 'Windows'

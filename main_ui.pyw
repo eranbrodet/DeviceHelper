@@ -41,6 +41,7 @@ class MyDialog(object):
 
 class AndroidHelperUI(Frame, object):
     _SDKS = ['Airwatch', 'Good', 'Lagoon']
+    BUTTON_WIDTH = 15 if is_windows() else 9
 
     def __init__(self, **kw):
         super(AndroidHelperUI, self).__init__(**kw)
@@ -82,7 +83,7 @@ class AndroidHelperUI(Frame, object):
     def _init_ui_elements(self):
         self._buttons = []
         for i, sdk_name in enumerate(self._SDKS):
-            b = Button(self._parent, text=sdk_name, width=15, command=partial(Sdks.run, getattr(Sdks, sdk_name.lower())))
+            b = Button(self._parent, text=sdk_name, width=self.BUTTON_WIDTH, command=partial(Sdks.run, getattr(Sdks, sdk_name.lower())))
             b.grid(row=i, column=0, sticky=W + N)
             self._buttons.append(b)
 
@@ -95,22 +96,22 @@ class AndroidHelperUI(Frame, object):
         for textbox in self._config.get_textboxes().items():
             name, item = textbox
             Label(self._parent, text=name.replace('_',' ').title()).grid(row=item.pos, column=2, sticky=E + N)
-            e = Entry(self._parent, textvariable=item.var)
+            e = Entry(self._parent, width=self.BUTTON_WIDTH, textvariable=item.var)
             e.grid(row=item.pos, column=3, sticky=W + N)
 
         file_frame = Frame(self._parent)
         file_frame.grid(row=10, column=0, columnspan=4, sticky=W + S)
         Label(file_frame, textvariable=self._config.app.var).grid(row=0, column=1, sticky=W + N)
-        open_file = Button(file_frame, width=15, command=self._handle_file, text="OPEN FILE")
+        open_file = Button(file_frame, width=self.BUTTON_WIDTH, command=self._handle_file, text="OPEN FILE")
         open_file.grid(row=0, column=0, sticky=W + N)
 
-        Button(self._parent, text='Uninstall', width=15, command=Device.uninstall).grid(row=11, column=0, sticky=W + N)
-        Button(self._parent, text='Install', width=15, command=Device.install).grid(row=11, column=1, sticky=W + N)
-        Button(self._parent, text='apktoold d', width=15, command=Device.apktool_d).grid(row=14, column=0, sticky=W + N)
-        Button(self._parent, text='apktoold b', width=15, command=Device.apktool_b).grid(row=14, column=1, sticky=W + N)
-        Button(self._parent, text='Screenshot', width=15, command=Device.take_screenshot).grid(row=14, column=2, sticky=W + N)
+        Button(self._parent, text='Uninstall', width=self.BUTTON_WIDTH, command=Device.uninstall).grid(row=11, column=0, sticky=W + N)
+        Button(self._parent, text='Install', width=self.BUTTON_WIDTH, command=Device.install).grid(row=11, column=1, sticky=W + N)
+        Button(self._parent, text='apktoold d', width=self.BUTTON_WIDTH, command=Device.apktool_d).grid(row=14, column=0, sticky=W + N)
+        Button(self._parent, text='apktoold b', width=self.BUTTON_WIDTH, command=Device.apktool_b).grid(row=14, column=1, sticky=W + N)
+        Button(self._parent, text='Screenshot', width=self.BUTTON_WIDTH, command=Device.take_screenshot).grid(row=14, column=2, sticky=W + N)
 
-        self.log = Text(self._parent, height=10, width=60, background='#ddd', state=DISABLED, font=('Consolas', 10))
+        self.log = Text(self._parent, height=10, width=self.BUTTON_WIDTH*4, background='#ddd', state=DISABLED, font=('Consolas', 10))
         self.log.grid(row=16, column=0, columnspan=5, sticky=W + E)
         ys = Scrollbar(self._parent, command=self.log.yview)
         ys.grid(row=16, column=6, sticky=E+N+S)
@@ -119,11 +120,11 @@ class AndroidHelperUI(Frame, object):
         xs.grid(row=17, column=0, columnspan=5, sticky=E+W+S)
         self.log['xscrollcommand'] = xs.set
 
-        Button(self._parent, text='Refresh', width=15, command=self.refresh_devices).grid(row=0, column=10, sticky=W + N)
-        self.devices = Listbox(self._parent, width=30, selectmode='single', exportselection=0, activestyle='none')
+        Button(self._parent, text='Refresh', width=self.BUTTON_WIDTH, command=self.refresh_devices).grid(row=0, column=10, sticky=W + N)
+        self.devices = Listbox(self._parent, width=self.BUTTON_WIDTH*2, selectmode='single', exportselection=0, activestyle='none')
         self.devices.grid(row=1, column=10, rowspan=17, sticky=W+N)
 
-        self._text_entry = Combobox(self._parent, textvariable=self._config.text_entry.var, width=27)
+        self._text_entry = Combobox(self._parent, textvariable=self._config.text_entry.var, width=(self.BUTTON_WIDTH*2)-3)
         self._text_entry.grid(row=17, column=10)
         Button(self._parent, text='>', width=2, command=self._enter_text).grid(row=17, column=11, sticky=W + N)
 
