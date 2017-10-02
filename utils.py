@@ -1,3 +1,5 @@
+from platform import system
+
 import requests #TODO Eran this is a dependency, can probably do just fine with builtin urllib
 from re import search
 from time import sleep
@@ -71,3 +73,6 @@ class BlackBerryUtils(object):
                 print(response.status_code)
             sleep(3)
         return ""
+
+def is_windows():
+    return system == 'Windows'

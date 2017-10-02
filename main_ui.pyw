@@ -11,7 +11,7 @@ except ImportError as e:  # Python 3
 from config import Config
 from device import Device
 from sdks import Sdks
-from utils import AbortAction
+from utils import AbortAction, is_windows
 
 
 class MyDialog(object):
@@ -128,7 +128,11 @@ class AndroidHelperUI(Frame, object):
         Button(self._parent, text='>', width=2, command=self._enter_text).grid(row=17, column=11, sticky=W + N)
 
     def _handle_file(self):
-        f = askopenfilename(filetypes=[('App','*.apk;*.ipa'), ('All files', '*')], initialdir=self._config.defaults.get('folder'))
+        if is_windows():
+            f = askopenfilename(filetypes=[('App','*.apk;*.ipa'), ('All files', '*')], initialdir=self._config.defaults.get('folder'))
+        else:
+            #TODO Eran for mac the filetypes didn't work correctly
+            f = askopenfilename(initialdir=self._config.defaults.get('folder'))
         if f:
             self._config.app.var.set(f)
 

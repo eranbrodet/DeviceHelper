@@ -1,13 +1,14 @@
 from contextlib import contextmanager
-from shutil import move
-from time import time
-from re import compile
-from subprocess import Popen, PIPE
-
+from os import system
 from os.path import exists, join
+from re import compile
+from shutil import move
+from subprocess import Popen, PIPE
+from time import time
 
 from config import Config
 from logger import logger
+from utils import is_windows
 
 
 class Device(object):
@@ -55,11 +56,14 @@ class Device(object):
         logger().debug(cmd)
         if not cls.MOCK_MODE:
             try:
-                # system(cmd)  # TODO Eran this opens a new window
-                CREATE_NO_WINDOW = 0x08000000 # Doesn't really work, shows a window and hides it
-                Popen(cmd.split(' '), shell=True, stdout=PIPE, stderr=PIPE, creationflags=CREATE_NO_WINDOW).communicate() #TODO synchronicity should be according to param, sometimes it might be could to cancel it
+                if is_windows():
+                    CREATE_NO_WINDOW = 0x08000000 # Doesn't really work, shows a window and hides it
+                    # TODO synchronicity should be according to param, sometimes it might be could to cancel it
+                    Popen(cmd.split(' '), shell=True, stdout=PIPE, stderr=PIPE, creationflags=CREATE_NO_WINDOW).communicate()
+                else:
+                    system(cmd)
             except Exception as e:
-                logger().error("Command failed " + e) #TODO eran also check ret code
+                logger().error("Command failed " + str(e)) #TODO eran also check ret code
 
     @classmethod
     def get_package_id(cls):
@@ -74,7 +78,7 @@ class Device(object):
         ret = []
         p = compile(r'(.*?)\s+.*?model:(.*?)\s+.*')
         try:
-            out = Popen('adb devices -l', stdout=PIPE).communicate()[0]
+            out = Popen(['adb', 'devices', '-l'], stdout=PIPE).communicate()[0]
             for line in out.splitlines():
                 m = p.match(line)
                 if m:
