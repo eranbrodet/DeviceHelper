@@ -7,7 +7,6 @@ Bugs:
 - Escape adb text chars (http://stackoverflow.com/a/31371987/2134702)
 
 Important improvements:
-- upgrade-detection system based on version file fetched from the repo
 - Shouldn't be able to start another session without canceling previous one
 - Add signapk button
 - _common_post should be automated
