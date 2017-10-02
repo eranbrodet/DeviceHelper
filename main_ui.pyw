@@ -12,6 +12,7 @@ from config import Config
 from device import Device
 from sdks import Sdks
 from utils import AbortAction, is_windows
+from versionChecker import VersionChecker
 
 
 class MyDialog(object):
@@ -62,7 +63,7 @@ class AndroidHelperUI(Frame, object):
             raise AbortAction("Action aborted by user")
 
     def _init_window(self):
-        size = 700, 400
+        size = 700, 410
         # Center position on screen
         w = self._parent.winfo_screenwidth()
         h = self._parent.winfo_screenheight()
@@ -128,6 +129,10 @@ class AndroidHelperUI(Frame, object):
         self._text_entry.grid(row=17, column=10)
         Button(self._parent, text='>', width=2, command=self._enter_text).grid(row=17, column=11, sticky=W + N)
 
+        self.new_version = Label(self._parent, foreground="#ff0000")
+        self.new_version.grid(row=18, column=0, columnspan=10, sticky=W + S)
+        self.after(1000, self._check_version)  # run in one second
+
     def _handle_file(self):
         if is_windows():
             f = askopenfilename(filetypes=[('App','*.apk;*.ipa'), ('All files', '*')], initialdir=self._config.defaults.get('folder'))
@@ -160,6 +165,12 @@ class AndroidHelperUI(Frame, object):
             if device == previous_selection:
                 new_selection_index = i
         self.devices.selection_set(new_selection_index)
+
+    def _check_version(self):
+        if VersionChecker.check_upgrade_needed():
+            self.new_version.config(text="Newer version detected, please update")
+        else:
+            self.after(86400000, self._check_version)  # 1 day in milliseconds
 
 
 #######################################################################################
