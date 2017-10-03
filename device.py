@@ -61,7 +61,7 @@ class Device(object):
                     # TODO synchronicity should be according to param, sometimes it might be could to cancel it
                     Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, creationflags=CREATE_NO_WINDOW).communicate()
                 else:
-                    system(cmd)
+                    system(" ".join(cmd))
             except Exception as e:
                 logger().error("Command failed " + str(e)) #TODO eran also check ret code
 
