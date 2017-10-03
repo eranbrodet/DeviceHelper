@@ -25,7 +25,7 @@ class Device(object):
 
     @classmethod
     def input_text(cls, text):
-        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ['text', text])
+        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ['text', '"' + text + '"'])
 
     @classmethod
     def install(cls):
