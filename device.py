@@ -13,19 +13,19 @@ from utils import is_windows
 
 class Device(object):
     MOCK_MODE = False #TODO move to config?
-    _adb_input_cmd = ' shell input'
+    _adb_input_cmd = ['shell', 'input']
 
     @classmethod
     def input_enter(cls):
-        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ' keyevent 66')
+        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ['keyevent', '66'])
 
     @classmethod
     def input_tab(cls):
-        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ' keyevent 61')
+        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ['keyevent', '61'])
 
     @classmethod
     def input_text(cls, text):
-        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ' text "' + text + '"')
+        cls.action(cls.get_adb_command_prefix() + cls._adb_input_cmd + ['text', text])
 
     @classmethod
     def install(cls):
@@ -33,7 +33,7 @@ class Device(object):
         if not file_path:
             logger().error('No app to install')
             return
-        cls.action(cls.get_adb_command_prefix() + ' install ' + file_path)
+        cls.action(cls.get_adb_command_prefix() + ['install', file_path])
 
     @classmethod
     def uninstall(cls):
@@ -41,7 +41,7 @@ class Device(object):
             logger().error('No app to uninstall')
             return
         package_id = cls.get_package_id()
-        cls.action(cls.get_adb_command_prefix() + ' uninstall ' + package_id)
+        cls.action(cls.get_adb_command_prefix() + ['uninstall', package_id])
 
     @classmethod
     def run(cls):
@@ -49,17 +49,17 @@ class Device(object):
             logger().error('No app to run')
             return
         package_id = cls.get_package_id()
-        cls.action(cls.get_adb_command_prefix() + ' shell monkey -p ' + package_id + ' -c android.intent.category.LAUNCHER 1')
+        cls.action(cls.get_adb_command_prefix() + ['shell', 'monkey', '-p', package_id, '-c', 'android.intent.category.LAUNCHER', '1'])
 
     @classmethod
     def action(cls, cmd):
-        logger().debug(cmd)
+        logger().debug(" ".join(cmd))
         if not cls.MOCK_MODE:
             try:
                 if is_windows():
                     CREATE_NO_WINDOW = 0x08000000 # Doesn't really work, shows a window and hides it
                     # TODO synchronicity should be according to param, sometimes it might be could to cancel it
-                    Popen(cmd.split(' '), shell=True, stdout=PIPE, stderr=PIPE, creationflags=CREATE_NO_WINDOW).communicate()
+                    Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, creationflags=CREATE_NO_WINDOW).communicate()
                 else:
                     system(cmd)
             except Exception as e:
@@ -100,8 +100,8 @@ class Device(object):
     def get_adb_command_prefix(cls):
         device = cls.get_selected_device()
         if device:
-            return 'adb -s ' + device[0]
-        return 'adb'
+            return ['adb', '-s', device[0]]
+        return ['adb']
 
     @classmethod
     @contextmanager
@@ -118,11 +118,13 @@ class Device(object):
         filename = join(config.defaults.get('folder'), filename)
         logger().info('Starting logs capture to ' + filename)
         with open(filename, 'w') as f:
-            cls.action(cls.get_adb_command_prefix() + ' logcat -c')
-            cmd = cls.get_adb_command_prefix().split() + ['logcat', '-v', 'time']
-
-            CREATE_NO_WINDOW = 0x08000000  # Doesn't really work, shows a window and hides it
-            p = Popen(cmd, stdout=f, creationflags=CREATE_NO_WINDOW)
+            cls.action(cls.get_adb_command_prefix() + ['logcat', '-c'])
+            cmd = cls.get_adb_command_prefix() + ['logcat', '-v', 'time']
+            if is_windows():
+                CREATE_NO_WINDOW = 0x08000000  # Doesn't really work, shows a window and hides it
+                p = Popen(cmd, stdout=f, creationflags=CREATE_NO_WINDOW)
+            else:
+                p = Popen(cmd, stdout=f)
             try:
                 yield
             finally:
@@ -136,9 +138,9 @@ class Device(object):
             logger().error("Can't take screenshot, no device connected")
             return
         filename = device[1] + str(time()).replace('.', '') + '.png'
-        cls.action(cls.get_adb_command_prefix() + ' shell screencap -p /sdcard/' + filename)
-        cls.action(cls.get_adb_command_prefix() + ' pull /sdcard/' + filename)
-        cls.action(cls.get_adb_command_prefix() + ' shell rm /sdcard/' + filename)
+        cls.action(cls.get_adb_command_prefix() + ['shell', 'screencap', '-p', '/sdcard/', filename])
+        cls.action(cls.get_adb_command_prefix() + ['pull', '/sdcard/', filename])
+        cls.action(cls.get_adb_command_prefix() + ['shell', 'rm', '/sdcard/', filename])
         dest = Config.getInstance().defaults.get('folder')
         move(filename, dest)
         logger().info("Saved image to " + join(dest, filename))
@@ -151,7 +153,7 @@ class Device(object):
             return
         # TODO eran if exists delete it or error, otherwise apktool fails anyway
         folder = app[:-4]
-        cls.action('apktool d ' + app + ' -o ' + folder)
+        cls.action(['apktool', 'd', app, '-o', folder])
 
         logger().info("Done")
 
@@ -165,5 +167,5 @@ class Device(object):
         if not exists(folder):
             logger().error("app wasn't disassembled")
             return
-        cls.action('apktool b ' + folder + ' -o ' + folder + '_rebuilt' + app[-4:])
+        cls.action(['apktool', 'b', folder, '-o', folder + '_rebuilt' + app[-4:]])
         logger().info("Done")

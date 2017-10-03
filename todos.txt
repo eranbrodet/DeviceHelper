@@ -1,5 +1,4 @@
 Bugs:
-- If filename contains spaces than Device.action() doesn't work correctly (it splits by spaces)
 - Input only stops before doing the app specific login
 - Logs abort is shown when no logs (had logs before)
 - Retaking focus after the popups doesn't always work right
