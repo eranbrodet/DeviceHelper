@@ -35,10 +35,6 @@ class Config(object):
         # Checkboxes
         self.input_only = Item(BooleanVar(), Types.Checkbox, position=0)
         self.logs = Item(BooleanVar(), Types.Checkbox, position=1)
-        self.jive_daily = Item(BooleanVar(), Types.Checkbox, position=2)
-        self.secret_server = Item(BooleanVar(), Types.Checkbox, position=3)
-        self.tango = Item(BooleanVar(), Types.Checkbox, position=4)
-        self.jabber = Item(BooleanVar(), Types.Checkbox, position=5)
 
         # Text fields
         self.user = Item(StringVar(), Types.String, 'user', 0)

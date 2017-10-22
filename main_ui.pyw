@@ -10,7 +10,7 @@ except ImportError as e:  # Python 3
     from tkinter.filedialog import askopenfilename
 from config import Config
 from device import Device
-from sdks import Sdks
+from modules.module import App, Sdk, Module
 from utils import AbortAction, is_windows
 from versionChecker import VersionChecker
 
@@ -41,7 +41,6 @@ class MyDialog(object):
 
 
 class AndroidHelperUI(Frame, object):
-    _SDKS = ['Airwatch', 'Good', 'Lagoon']
     BUTTON_WIDTH = 15 if is_windows() else 9
 
     def __init__(self, **kw):
@@ -63,7 +62,7 @@ class AndroidHelperUI(Frame, object):
             raise AbortAction("Action aborted by user")
 
     def _init_window(self):
-        size = 700, 410
+        size = 700, 460
         # Center position on screen
         w = self._parent.winfo_screenwidth()
         h = self._parent.winfo_screenheight()
@@ -82,17 +81,23 @@ class AndroidHelperUI(Frame, object):
         self._parent.title("Android Helper")
 
     def _init_ui_elements(self):
-        self._buttons = []
-        for i, sdk_name in enumerate(self._SDKS):
-            b = Button(self._parent, text=sdk_name, width=self.BUTTON_WIDTH, command=partial(Sdks.run, getattr(Sdks, sdk_name.lower())))
-            b.grid(row=i, column=0, sticky=W + N)
-            self._buttons.append(b)
+        #TODO dedup?
+        self.sdks = Listbox(self._parent, width=self.BUTTON_WIDTH, selectmode='single', exportselection=0, activestyle='none')
+        self.sdks.grid(row=0, column=0, rowspan=10, sticky=W + N)
+        for sdk in Sdk.iter():
+            self.sdks.insert(END, sdk.__name__)
+        self.sdks.bind('<Double-Button-1>', self._clear_list)
+
+        self.apps = Listbox(self._parent, width=self.BUTTON_WIDTH, selectmode='single', exportselection=0, activestyle='none')
+        self.apps.grid(row=0, column=1, rowspan=10, sticky=W + N)
+        for app in App.iter():
+            self.apps.insert(END, app.__name__)
+        self.apps.bind('<Double-Button-1>', self._clear_list)
 
         for checkbox in self._config.get_checkboxes().items():
             name, item = checkbox
-            c = Checkbutton(self._parent, text=name.replace('_',' ').title(), variable=item.var)
-            c.grid(row=item.pos, column=1, sticky=W + N)
-
+            c = Checkbutton(self._parent, text=name.replace('_', ' ').title(), variable=item.var)
+            c.grid(row=5 + item.pos, column=2, sticky=W + N) #TODO magic number 5
         #TODO Eran clarify 'leave empty for defaults'
         for textbox in self._config.get_textboxes().items():
             name, item = textbox
@@ -102,7 +107,7 @@ class AndroidHelperUI(Frame, object):
 
         file_frame = Frame(self._parent)
         file_frame.grid(row=10, column=0, columnspan=4, sticky=W + S)
-        Label(file_frame, textvariable=self._config.app.var).grid(row=0, column=1, sticky=W + N)
+        Label(file_frame, textvariable=self._config.app.var, width=self.BUTTON_WIDTH*4).grid(row=0, column=1, sticky=W + N)
         open_file = Button(file_frame, width=self.BUTTON_WIDTH, command=self._handle_file, text="OPEN FILE")
         open_file.grid(row=0, column=0, sticky=W + N)
 
@@ -111,6 +116,7 @@ class AndroidHelperUI(Frame, object):
         Button(self._parent, text='apktoold d', width=self.BUTTON_WIDTH, command=Device.apktool_d).grid(row=14, column=0, sticky=W + N)
         Button(self._parent, text='apktoold b', width=self.BUTTON_WIDTH, command=Device.apktool_b).grid(row=14, column=1, sticky=W + N)
         Button(self._parent, text='Screenshot', width=self.BUTTON_WIDTH, command=Device.take_screenshot).grid(row=14, column=2, sticky=W + N)
+        Button(self._parent, text='Run', width=self.BUTTON_WIDTH, command=Module.run_all).grid(row=14, column=3, sticky=W + N)
 
         self.log = Text(self._parent, height=10, width=self.BUTTON_WIDTH*4, background='#ddd', state=DISABLED, font=('Consolas', 10))
         self.log.grid(row=16, column=0, columnspan=5, sticky=W + E)
@@ -171,6 +177,11 @@ class AndroidHelperUI(Frame, object):
             self.new_version.config(text="Newer version detected, please update")
         else:
             self.after(86400000, self._check_version)  # 1 day in milliseconds
+
+    def _clear_list(self, event):
+        w = event.widget
+        w.selection_clear(0, END)
+
 
 
 #######################################################################################
