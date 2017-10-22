@@ -6,10 +6,11 @@ Bugs:
 - Escape adb text chars (http://stackoverflow.com/a/31371987/2134702)
 
 Important improvements:
+- iOS support
 - Shouldn't be able to start another session without canceling previous one
 - Add signapk button
-- _common_post should be automated
 - Ability to cancel when running system command (and not just from popup)
+
 
 Unimportant improvements:
 - Apply default folder for everything (app, logs, screenshots, etc.)
