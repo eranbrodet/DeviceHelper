@@ -1,5 +1,8 @@
 from distutils.version import StrictVersion
-from urllib import urlopen
+try:   # Python 2
+    from urllib import urlopen
+except ImportError:  # Python 3
+    from urllib.request import urlopen
 
 
 class VersionChecker(object):
@@ -9,7 +12,7 @@ class VersionChecker(object):
     def _getVersion(cls):
         #TODO Eran handle errors such as no connection
         r = urlopen(cls._URL).read()
-        return StrictVersion(r)
+        return StrictVersion(r.decode('utf-8'))
 
     @classmethod
     def check_upgrade_needed(cls):
