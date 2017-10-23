@@ -111,12 +111,12 @@ class AndroidHelperUI(Frame, object):
         open_file = Button(file_frame, width=self.BUTTON_WIDTH, command=self._handle_file, text="OPEN FILE")
         open_file.grid(row=0, column=0, sticky=W + N)
 
-        Button(self._parent, text='Uninstall', width=self.BUTTON_WIDTH, command=Device.uninstall).grid(row=11, column=0, sticky=W + N)
-        Button(self._parent, text='Install', width=self.BUTTON_WIDTH, command=Device.install).grid(row=11, column=1, sticky=W + N)
+        Button(self._parent, text='Run', width=self.BUTTON_WIDTH, command=Module.run_all).grid(row=11, column=0, sticky=W + N)
+        Button(self._parent, text='Uninstall', width=self.BUTTON_WIDTH, command=Device.uninstall).grid(row=11, column=1, sticky=W + N)
+        Button(self._parent, text='Install', width=self.BUTTON_WIDTH, command=Device.install).grid(row=11, column=2, sticky=W + N)
         Button(self._parent, text='apktoold d', width=self.BUTTON_WIDTH, command=Device.apktool_d).grid(row=14, column=0, sticky=W + N)
         Button(self._parent, text='apktoold b', width=self.BUTTON_WIDTH, command=Device.apktool_b).grid(row=14, column=1, sticky=W + N)
         Button(self._parent, text='Screenshot', width=self.BUTTON_WIDTH, command=Device.take_screenshot).grid(row=14, column=2, sticky=W + N)
-        Button(self._parent, text='Run', width=self.BUTTON_WIDTH, command=Module.run_all).grid(row=14, column=3, sticky=W + N)
 
         self.log = Text(self._parent, height=10, width=self.BUTTON_WIDTH*4, background='#ddd', state=DISABLED, font=('Consolas', 10))
         self.log.grid(row=16, column=0, columnspan=5, sticky=W + E)
