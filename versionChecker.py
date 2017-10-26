@@ -4,6 +4,7 @@ try:   # Python 2
 except ImportError:  # Python 3
     from urllib.request import urlopen
 
+from utils import get_full_path
 
 class VersionChecker(object):
     _URL = 'https://raw.githubusercontent.com/eranbrodet/DeviceHelper/master/version.txt'
@@ -16,7 +17,7 @@ class VersionChecker(object):
 
     @classmethod
     def check_upgrade_needed(cls):
-        with open('version.txt') as f:
+        with open(get_full_path('version.txt')) as f:
             current_version = StrictVersion(f.read())
         latest_version = cls._getVersion()
         return current_version < latest_version

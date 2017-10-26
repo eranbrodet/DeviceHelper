@@ -4,7 +4,7 @@ except ImportError:
     from tkinter import BooleanVar, Tk, StringVar  # Python 3
 from json import load as json_load
 
-from utils import Singleton
+from utils import Singleton, get_full_path
 
 
 class Types(object):
@@ -60,5 +60,5 @@ class Config(object):
         self.current_sdk = sdk
 
     def _load_defaults(self):
-        with open('defaults.json') as f:
+        with open(get_full_path('defaults.json')) as f:
             return json_load(f)

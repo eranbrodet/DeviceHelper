@@ -28,7 +28,7 @@ class Module(object):
     @classmethod
     def run_all(cls):
         try:
-            if not Device.MOCK_MODE and cls._config.ui_main.devices.size() == 0:
+            if not Device.MOCK_MODE and Device.is_android and cls._config.ui_main.devices.size() == 0:
                 raise AbortAction('no devices found')
             sdk = None
             sdk_indices = cls._config.ui_main.sdks.curselection()

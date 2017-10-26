@@ -1,9 +1,9 @@
 from platform import system
-
-import requests #TODO Eran this is a dependency, can probably do just fine with builtin urllib
+from os.path import join, split
 from re import search
 from time import sleep
 
+import requests #TODO Eran this is a dependency, can probably do just fine with builtin urllib
 from requests.packages.urllib3 import disable_warnings
 
 
@@ -74,5 +74,11 @@ class BlackBerryUtils(object):
             sleep(3)
         return ""
 
+
 def is_windows():
     return system() == 'Windows'
+
+def get_full_path(filename):
+    return join(split(__file__)[0], filename)
+
+BUTTON_WIDTH = 15 if is_windows() else 9
