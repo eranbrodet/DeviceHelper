@@ -6,7 +6,7 @@ Bugs:
 - Escape adb text chars (http://stackoverflow.com/a/31371987/2134702)
 
 Important improvements:
-- iOS support
+- when switching away from iOS should call disconnect, shutting the program down (in any way) should also call disconnect
 - Shouldn't be able to start another session without canceling previous one
 - Add signapk button
 - Ability to cancel when running system command (and not just from popup)
