@@ -3,13 +3,13 @@ from modules.module import Sdk
 from utils import BlackBerryUtils
 
 
-class Blackberry(Sdk):
+class BlackberrySV(Sdk):
     def run(self):
-        server_user = self._config.defaults.get('blackberry', {}).get('good_user', 'Eran Brodet')
+        server_user = self._config.defaults.get('blackberrysv', {}).get('good_user', 'Eran Brodet')
         if Device.MOCK_MODE:
             access_key = '123451234512345'
         else:
-            access_key = BlackBerryUtils(self._config.defaults, 'blackberry').get_access_key_from_server(server_user)
+            access_key = BlackBerryUtils(self._config.defaults, 'blackberrysv').get_access_key_from_server(server_user)
         self._logger.info('Access key is ' + access_key)
 
         self._config.ui_main.prompt_user('input login')

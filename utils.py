@@ -42,21 +42,24 @@ class Singleton(object):
 
 
 class BlackBerryUtils(object):
-    def __init__(self, defaults):
-        self._defaults = defaults['blackberry']
+    def __init__(self, defaults, sdk):
+        self._defaults = defaults[sdk]
 
     def get_access_key_from_server(self, user_name):
         disable_warnings()
+        ns = self._defaults['key_ns']
         user_id = self.get_user_id_by_username(user_name)
         for i in range(3):
             # Verify=False, is for SSL to not fail when cert is invalid.
             response = requests.post(self._defaults['service_url'], data=self._defaults['get_new_key_body'] % (user_id,), headers=self._defaults['header_data'], verify=False)
             if response.status_code == 200:
-                return search("(?<=<ns4:pin>)(.*)(?=</ns4:pin>)", response._content).group(0)
+                ret = search("(?<=<"+ns+":pin>)(.*)(?=</"+ns+":pin>)", response._content).group(0)
+                return ret
             sleep(3)
         return ""
 
     def get_user_id_by_username(self, username):
+        ns = self._defaults['user_ns']
         for i in range(3):
             response = requests.post(self._defaults['cap_url'], data=self._defaults['cap_body'], headers=self._defaults['cap_header_data'], verify=False)
             content = response._content.replace("><", ">\n<").split("\n")
@@ -66,7 +69,8 @@ class BlackBerryUtils(object):
                 #TODO eran content is everyone, can use it to generate ui list
                 for line in content:
                     if found_user:
-                        return search("(?<=<ns1:user_id>)(.*)(?=</ns1:user_id>)", line).group(0)
+                        ret = search("(?<=<"+ns+":user_id>)(.*)(?=</"+ns+":user_id>)", line).group(0)
+                        return ret
                     if username in line:
                         found_user = True
             else:
