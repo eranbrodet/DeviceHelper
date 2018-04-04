@@ -139,7 +139,7 @@ class _AndroidDevice(object):
         if not file_path:
             logger().error('No app to install')
             return
-        cls._action(cls._get_adb_command_prefix() + ['install', file_path])
+        cls._action(cls._get_adb_command_prefix() + ['install', '-r', file_path])
 
     @classmethod
     def uninstall(cls):
